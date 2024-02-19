@@ -28,13 +28,38 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text, 
-      password: passwordController.text,
-    );
+    // Posem el mètode de signIn en un try/catch, 
+    //    per si posen unes credencials incorrectes.
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, 
+        password: passwordController.text,
+      );
 
-    // Traiem el cercle de càrrega (pop, com en una pila).
-    Navigator.pop(context);
+      // Traiem el cercle de càrrega (pop, com en una pila).
+      Navigator.pop(context);
+
+    } on FirebaseAuthException catch (e) {
+
+      // Traiem el cercle de càrrega (pop, com en una pila).
+      Navigator.pop(context);
+
+      //print("Error amb les credencials: " + e.toString());
+
+      wrongCredencialsMessage();
+    }
+  }
+
+  void wrongCredencialsMessage() {
+
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return const AlertDialog(
+          title: Text("The email and/or password are not correct.",),
+        );
+      },
+    );
   }
 
   @override
