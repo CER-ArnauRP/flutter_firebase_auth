@@ -4,18 +4,37 @@ import 'package:flutter_firebase_auth/components/my_button.dart';
 import 'package:flutter_firebase_auth/components/my_textfield.dart';
 import 'package:flutter_firebase_auth/components/square_tile.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
   void signUserIn() async {
+
+    // Mostrar cercle de càrrega (feedback per l'usuari)
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: emailController.text, 
       password: passwordController.text,
     );
+
+    // Traiem el cercle de càrrega (pop, com en una pila).
+    Navigator.pop(context);
   }
 
   @override
