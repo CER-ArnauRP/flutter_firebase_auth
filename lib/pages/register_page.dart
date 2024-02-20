@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   void signUserUp() async {
 
@@ -33,10 +34,20 @@ class _RegisterPageState extends State<RegisterPage> {
     // Posem el mètode de signIn en un try/catch, 
     //    per si posen unes credencials incorrectes.
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, 
-        password: passwordController.text,
-      );
+      // Check both password input texts.
+      if (passwordController.text == confirmPasswordController.text) {
+
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, 
+          password: passwordController.text,
+        );
+
+      } else {
+        // Error: els dos camps de password no coincideixen.
+        wrongCredencialsMessage("Passwords don't match");
+      }
+
+      
 
       // Traiem el cercle de càrrega (pop, com en una pila).
       Navigator.pop(context);
@@ -48,20 +59,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
       //print("Error amb les credencials: " + e.toString());
 
-      wrongCredencialsMessage();
+      wrongCredencialsMessage("The email and/or password are not correct.");
     }
   }
 
-  void wrongCredencialsMessage() {
+  void wrongCredencialsMessage(String text) {
 
     showDialog(
       context: context, 
       builder: (context) {
-        return const AlertDialog(
-          title: Text("The email and/or password are not correct.",),
+        return AlertDialog(
+          title: Text(text,),
         );
       },
     );
+    
+    
   }
 
   @override
@@ -125,25 +138,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // Confirm password.
                 MyTextField(
-                  controller: passwordController,
+                  controller: confirmPasswordController,
                   hintText: "Confirm password",
                   obscureText: true,
-                ),
-            
-                const SizedBox(
-                  height: 10,
-                ),
-            
-                // Forgot password?
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    // En una Row per posar-lo a la dreta.
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text("Forgot password?"),
-                    ],
-                  ),
                 ),
             
                 const SizedBox(
