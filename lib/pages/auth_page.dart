@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/pages/home_page.dart';
+import 'package:flutter_firebase_auth/pages/login_or_register.dart';
 import 'package:flutter_firebase_auth/pages/login_page.dart';
 
 // Classe utilitzada per comprovar si l'usuari té sessió iniciada o no.
@@ -27,7 +28,7 @@ class AuthPage extends StatelessWidget {
 
           // Usuari amb sessió no iniciada:
           else {
-            return LoginPage();
+            return LoginOrRegister();
           }
         },
       ),
